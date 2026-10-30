@@ -1,0 +1,51 @@
+﻿Title,Bug,Status String,Status Value
+Deleted equipment can be updated through the external API,Yes,Ready to Release,8
+[BE] Writable REST API - GET All Booking Notes (for a booking),No,Ready for staging,6
+[BE] - Write Booking API endpoints - 403 message needs to be clearer,No,Ready for staging,6
+[BE] Writable REST API - Get Equipment Details endpoint returns AddOn related information,No,Ready for staging,6
+[BE] Writeable REST API - Get Equipment AddOns,No,Ready for staging,6
+[BE] Writable REST API - Remove User Training,No,Ready for staging,6
+[BE] Writable REST API - Add User Training,No,Ready for staging,6
+[BE] Writable REST API - Create & Update Booking Request Add Support For Group Bookings,No,Ready for staging,6
+[BE] Writable REST API - Create & Update Booking Request Add Support For AddOns,No,Ready for staging,6
+[BE] Writable REST API - Create & Update Booking Request Add Support For Project and Funding Codes,No,Ready for staging,6
+[BE] Writable REST API - Create Booking Request Add Support For Booking for Others,No,Ready for staging,6
+[BE] Writable REST API - Create Booking Note Endpoint,No,Ready for staging,6
+[BE] Writable REST API  - Modify booking GET booking endpoints to return maintenance specific properties,No,Ready for staging,6
+[BE] - Writable REST API - Create supporting GET endpoint to retrieve available hours,No,Ready for staging,6
+[BE] - Writable REST API - Create supporting GET endpoint to retrieve users for a specific lab,No,Ready for staging,6
+[BE] Writable REST API - Update Booking Request (with only basic information including maintenance),No,Ready for staging,6
+[BE] Writable REST API - Create Booking Request (with only basic information),No,Ready for staging,6
+[BE] Writable REST API - Add new POST Search endpoint for bookings,No,Testing,5
+[BE] base_unit is empty for Fixed per Unit equipment add-on,Yes,Testing,5
+Get Available Slots - Requests against deleted equipment are allowed,Yes,Testing,5
+Incorect error message for time range longer than 2 weeks,Yes,Testing,5
+[BE] Writable REST API - Update Booking Note Endpoint,No,Testing,5
+External booking API allows updates within the restricted edit period and causes inconsistent booking duration display,Yes,Testing,5
+External booking API allows updates that exceed a user’s weekly booking limit,Yes,Testing,5
+External booking API allows creation and updates that violate minimum and maximum booking duration limits,Yes,Testing,5
+External booking API allows creation of bookings that violate equipment booking increment rules,Yes,Testing,5
+[BE] Writable REST API - Add new endpoint to retrieve equipment training information,No,Testing,5
+[BE] Writeable REST API - Get Equipment Access,No,Testing,5
+[BE] Writable REST API - Create  Booking Request Add Support For Recurring Bookings,No,Testing,5
+Equipment POST/PATCH accepts a maintenance contract belonging to another lab,Yes,Ready for Testing,4
+POST/PATCH equipment returns misleading validation message for groups with common users,Yes,Ready for Testing,4
+POST/PATCH equipment returns misleading account_not_found for a foreign-lab equipment label,Yes,Ready for Testing,4
+"POST /equipment accepts omitted mandatory subcategory, manufacturer and model fields",Yes,Ready for Testing,4
+Equipment API returns empty 403 response when required equipment scope is missing,Yes,Ready for Testing,4
+Booking owner can edit an admin/instructor note via PATCH API,Yes,Ready for Testing,4
+[BE] Creating a recurring maintenance booking as a researcher returns 500 instead of 403,Yes,Ready for Testing,4
+[BE] Writable REST API - Ensure Get Booking Details Endpoint returns all supported properties,No,Ready for Testing,4
+[BE] Writable REST API - Add new GET method to retrieve user details,No,Ready for Testing,4
+[BE] Writable REST API - Create and Update Equipment (Add Support for Child Equipment),No,Ready for Testing,4
+GET equipment users returns an empty error body when Authorization is missing,Yes,Review,3
+POST/PATCH equipment returns an empty 401 response instead of the documented JSON authentication error,Yes,To Do,1
+API | Booking can be created without completing a mandatory custom form,No,To Do,1
+[BE] Recurring booking response contains unnecessary recurrence_day field,Yes,To Do,1
+[BE]  Bookings API - Complete Documentation,No,To Do,1
+[BE] Equipment API - Documentation Completion,No,To Do,1
+"[BE] Writable REST API - Manage Bookings e.g. Accept, Reject,  OR Cancel Bookings",No,Backlog,-2
+External booking API allows non-admin bookings outside the equipment’s configured schedule,Yes,,
+External booking API allows bookings outside the equipment’s configured start times,Yes,,
+Invalid booking time intervals return a 500 error instead of a field-level 422 validation error,Yes,,
+Booking is created when start or end time uses an invalid ISO 8601 format,Yes,,

@@ -1,0 +1,3360 @@
+openapi: 3.0.3
+info:
+  title: Calira API
+  version: 1.0.0
+  description: 'Calira (formerly Clustermarket) REST API. Built from the app-clustermarket feature/post-mvp-booking-api branch.
+    Reference: https://apidocs.clustermarket.com/'
+  contact:
+    name: Calira support
+    email: support@calira.co
+    url: https://calira.co/support
+servers:
+- url: https://api.clustermarket.com/v1
+  description: Production
+- url: https://api.clustermarket.dev/v1
+  description: Staging
+- url: https://5975.api.review.clustermarket.dev/v1
+  description: Review app (pre-release testing)
+tags:
+- name: User
+- name: Accounts
+- name: Projects
+- name: Groups
+- name: Users
+- name: Equipment
+- name: Bookings
+- name: BookingNotes
+- name: Uploads
+paths:
+  /user:
+    get:
+      operationId: getCurrentUser
+      tags:
+      - User
+      summary: Get current user
+      description: Details of the user the access token belongs to.
+      security:
+      - oauth:
+        - read_user
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /accounts:
+    get:
+      operationId: listAccounts
+      tags:
+      - Accounts
+      summary: List accounts
+      description: 'Accounts (organisations, departments, labs) the application can access.
+
+
+        Paged: use `page` and `per_page` (max 100). Totals are in the `X-Total-Records`, `X-Current-Page` and `X-Per-Page`
+        response headers.'
+      security:
+      - oauth:
+        - read_accounts
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountSummary'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /accounts/{id}:
+    get:
+      operationId: getAccount
+      tags:
+      - Accounts
+      summary: Get account
+      description: Full details of one account.
+      security:
+      - oauth:
+        - read_accounts
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Account ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /accounts/{account_id}/projects:
+    get:
+      operationId: listProjects
+      tags:
+      - Projects
+      summary: List projects
+      description: 'Projects in a lab.
+
+
+        Paged: use `page` and `per_page` (max 100). Totals are in the `X-Total-Records`, `X-Current-Page` and `X-Per-Page`
+        response headers.'
+      security:
+      - oauth:
+        - read_projects
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        description: Lab account ID
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectSummary'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /accounts/{account_id}/projects/{id}:
+    get:
+      operationId: getProject
+      tags:
+      - Projects
+      summary: Get project
+      description: One project with its funding codes and users.
+      security:
+      - oauth:
+        - read_projects
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        description: Lab account ID
+        schema:
+          type: integer
+      - name: id
+        in: path
+        required: true
+        description: Project ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /groups:
+    get:
+      operationId: listGroups
+      tags:
+      - Groups
+      summary: List groups
+      description: 'User groups, optionally only for one lab.
+
+
+        Paged: use `page` and `per_page` (max 100). Totals are in the `X-Total-Records`, `X-Current-Page` and `X-Per-Page`
+        response headers.'
+      security:
+      - oauth:
+        - read_accounts
+      parameters:
+      - name: account
+        in: query
+        required: false
+        description: Lab account ID
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /groups/{id}:
+    get:
+      operationId: getGroup
+      tags:
+      - Groups
+      summary: Get group
+      description: One group with its equipment.
+      security:
+      - oauth:
+        - read_accounts
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Group ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupDetails'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /users/{account_id}:
+    get:
+      operationId: listLabUsers
+      tags:
+      - Users
+      summary: List lab users
+      description: 'Members of a lab. The ID is a lab (account) ID, not a user ID.
+
+
+        Paged: use `page` and `per_page` (max 100). Totals are in the `X-Total-Records`, `X-Current-Page` and `X-Per-Page`
+        response headers.'
+      security:
+      - oauth:
+        - read_users
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        description: Lab account ID
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LabMember'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /equipment:
+    get:
+      operationId: listEquipment
+      tags:
+      - Equipment
+      summary: List equipment
+      description: 'Equipment, optionally only for one lab.
+
+
+        Paged: use `page` and `per_page` (max 100). Totals are in the `X-Total-Records`, `X-Current-Page` and `X-Per-Page`
+        response headers.'
+      security:
+      - oauth:
+        - read_equipment
+      parameters:
+      - name: account
+        in: query
+        required: false
+        description: Lab account ID
+        schema:
+          type: integer
+      - name: exclude_parents
+        in: query
+        required: false
+        description: Set to true to leave out parent equipment.
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EquipmentSummary'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+    post:
+      operationId: createEquipment
+      tags:
+      - Equipment
+      summary: Create equipment
+      description: Create a piece of equipment. Rate limited to 30 requests/minute.
+      security:
+      - oauth:
+        - write_equipment
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EquipmentWriteResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '422':
+          $ref: '#/components/responses/Error422'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '500':
+          $ref: '#/components/responses/Error500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EquipmentCreateRequest'
+  /equipment/contact_people:
+    get:
+      operationId: listEquipmentContactPeople
+      tags:
+      - Equipment
+      summary: List equipment contact people
+      description: Lab admins and instructors who can be set as equipment contacts (use their IDs in `contact_access_role_ids`).
+      security:
+      - oauth:
+        - write_equipment
+      parameters:
+      - name: account_id
+        in: query
+        required: true
+        description: Lab account ID
+        schema:
+          type: integer
+      - name: equipment_id
+        in: query
+        required: false
+        description: Check rights to update this equipment
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactPeopleResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /equipment/{id}:
+    get:
+      operationId: getEquipment
+      tags:
+      - Equipment
+      summary: Get equipment
+      description: Full details of one piece of equipment.
+      security:
+      - oauth:
+        - read_equipment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Equipment ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Equipment'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+    patch:
+      operationId: updateEquipment
+      tags:
+      - Equipment
+      summary: Update equipment
+      description: Update a piece of equipment. Send only the fields to change. Rate limited to 30 requests/minute.
+      security:
+      - oauth:
+        - write_equipment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Equipment ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EquipmentWriteResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '422':
+          $ref: '#/components/responses/Error422'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '500':
+          $ref: '#/components/responses/Error500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EquipmentUpdateRequest'
+  /equipment/{id}/bookings:
+    get:
+      operationId: listEquipmentBookings
+      tags:
+      - Equipment
+      summary: List equipment bookings
+      description: 'Bookings on one piece of equipment.
+
+
+        Paged: use `page` and `per_page` (max 100). Totals are in the `X-Total-Records`, `X-Current-Page` and `X-Per-Page`
+        response headers.'
+      security:
+      - oauth:
+        - read_equipment
+        - read_bookings
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Equipment ID
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookingSummary'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /equipment/{id}/users:
+    get:
+      operationId: listEquipmentUsers
+      tags:
+      - Users
+      summary: List equipment users
+      description: Users who have access to a piece of equipment (e.g. to invite to a group booking).
+      security:
+      - oauth:
+        - read_users
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Equipment ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EquipmentUsersResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /equipment/{id}/booking_add_ons:
+    get:
+      operationId: listBookingAddOns
+      tags:
+      - Equipment
+      summary: List booking add-ons
+      description: Add-ons (e.g. consumables) the current user can add to a booking on this equipment.
+      security:
+      - oauth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Equipment ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingAddOnsResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /equipment_available_slots/{equipment_id}:
+    get:
+      operationId: getAvailableSlots
+      tags:
+      - Bookings
+      summary: Get available slots
+      description: Free time on a piece of equipment between `start_time` and `end_time`.
+      security:
+      - oauth:
+        - write_bookings
+      parameters:
+      - name: equipment_id
+        in: path
+        required: true
+        description: Equipment ID
+        schema:
+          type: integer
+      - name: start_time
+        in: query
+        required: true
+        description: Start of the search window (ISO 8601).
+        schema:
+          type: string
+          format: date-time
+      - name: end_time
+        in: query
+        required: true
+        description: End of the search window (ISO 8601).
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailableSlotsResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '422':
+          $ref: '#/components/responses/Error422'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /bookings:
+    get:
+      operationId: listBookings
+      tags:
+      - Bookings
+      summary: List bookings
+      description: 'Bookings the user can see, optionally only for one lab.
+
+
+        Paged: use `page` and `per_page` (max 100). Totals are in the `X-Total-Records`, `X-Current-Page` and `X-Per-Page`
+        response headers.'
+      security:
+      - oauth:
+        - read_bookings
+      parameters:
+      - name: provider_account
+        in: query
+        required: false
+        description: Providing lab account ID
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookingSummary'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '500':
+          $ref: '#/components/responses/Error500'
+    post:
+      operationId: createBooking
+      tags:
+      - Bookings
+      summary: Create booking
+      description: Book a piece of equipment. Business-rule failures return 403. Rate limited to 30 requests/minute.
+      security:
+      - oauth:
+        - write_bookings
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingWriteResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '422':
+          $ref: '#/components/responses/Error422'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '500':
+          $ref: '#/components/responses/Error500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCreateRequest'
+  /bookings/{id}:
+    get:
+      operationId: getBooking
+      tags:
+      - Bookings
+      summary: Get booking
+      description: Full details of one booking.
+      security:
+      - oauth:
+        - read_bookings
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Booking ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+    patch:
+      operationId: updateBooking
+      tags:
+      - Bookings
+      summary: Update booking
+      description: Change a booking. Send only the fields to change. Rate limited to 30 requests/minute.
+      security:
+      - oauth:
+        - write_bookings
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Booking ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingWriteResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '422':
+          $ref: '#/components/responses/Error422'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '500':
+          $ref: '#/components/responses/Error500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingUpdateRequest'
+  /bookings/{id}/invitation:
+    post:
+      operationId: respondToBookingInvitation
+      tags:
+      - Bookings
+      summary: Respond to booking invitation
+      description: Accept or reject an invitation to a group booking. The token user must be the invitee. Rate limited to
+        30 requests/minute.
+      security:
+      - oauth:
+        - write_bookings
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Booking ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingInvitationRespondResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '422':
+          $ref: '#/components/responses/Error422'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '500':
+          $ref: '#/components/responses/Error500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingInvitationRespondRequest'
+  /booking/notes/{id}:
+    post:
+      operationId: createBookingNote
+      tags:
+      - BookingNotes
+      summary: Create booking note
+      description: Add a note (optionally with an attached file) to a booking. `id` is the BOOKING ID.
+      security:
+      - oauth:
+        - write_bookings
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Booking ID
+        schema:
+          type: integer
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingNoteResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '422':
+          $ref: '#/components/responses/Error422'
+        '500':
+          $ref: '#/components/responses/Error500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingNoteRequest'
+    patch:
+      operationId: updateBookingNote
+      tags:
+      - BookingNotes
+      summary: Update booking note
+      description: Change a booking note. `id` is the NOTE ID (booking_note.note_id from create), not the booking ID.
+      security:
+      - oauth:
+        - write_bookings
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Note ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingNoteResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '422':
+          $ref: '#/components/responses/Error422'
+        '500':
+          $ref: '#/components/responses/Error500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingNoteRequest'
+  /custom_form_responses/{id}:
+    get:
+      operationId: getCustomFormResponse
+      tags:
+      - Bookings
+      summary: Get custom form response
+      description: Answers given on a booking form. IDs are listed in each booking's `custom_form_responses`.
+      security:
+      - oauth:
+        - read_bookings
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Custom form response ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFormResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '500':
+          $ref: '#/components/responses/Error500'
+  /uploads:
+    post:
+      operationId: registerUpload
+      tags:
+      - Uploads
+      summary: Register upload
+      description: 'Step 1 of a file upload: register the file, then PUT its bytes to `direct_upload.url` with `direct_upload.headers`.
+        Use the returned `signed_id` in equipment `photos`/`documents` or a booking note. Rate limited to 30 requests/minute.'
+      security:
+      - oauth:
+        - write_equipment
+      - oauth:
+        - write_bookings
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadRegisteredResponse'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '422':
+          $ref: '#/components/responses/Error422'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '500':
+          $ref: '#/components/responses/Error500'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadRegisterRequest'
+components:
+  securitySchemes:
+    oauth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://app.clustermarket.com/oauth/authorize
+          tokenUrl: https://app.clustermarket.com/oauth/token
+          refreshUrl: https://app.clustermarket.com/oauth/token
+          scopes:
+            read_accounts: Read accounts and groups.
+            read_bookings: Read bookings.
+            read_equipment: Read equipment.
+            read_projects: Read projects and funding codes.
+            read_user: Read the current user.
+            read_users: Read lab members and equipment users.
+            write_bookings: Create/update bookings and notes, respond to invitations, read available slots.
+            write_equipment: Create/update equipment and register uploads.
+  parameters:
+    Page:
+      name: page
+      in: query
+      description: Page number (1-based, default 1).
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PerPage:
+      name: per_page
+      in: query
+      description: Records per page (1-100, default 100).
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 100
+  responses:
+    Error400:
+      description: Malformed request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Error401:
+      description: Missing, invalid or expired access token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Error403:
+      description: Missing scope, application not approved/authorised for the lab, user not permitted, or a booking business
+        rule failed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Error404:
+      description: Record not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Error422:
+      description: Validation failed. See `errors` for details.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Error429:
+      description: Too many write requests (30/minute per IP). Retry with backoff.
+      content:
+        text/html:
+          schema:
+            type: string
+    Error500:
+      description: Unexpected server error. Retry with exponential backoff.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    Account:
+      title: Account
+      type: object
+      description: Represents an organisation, department or lab.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          example: Cambridge Graphene Center
+        account_type:
+          type: string
+          example: lab
+          description: 'Server default: lab.
+
+
+            Values: `organisation`, `department`, `lab`.'
+        sector:
+          type: string
+          description: 'Values: `academia`, `industry`.'
+        description:
+          type: string
+        website:
+          type: string
+          maxLength: 200
+          example: https://www.graphene.cam.ac.uk/
+        timezone:
+          type: string
+          example: Europe/London
+        department:
+          $ref: '#/components/schemas/IdName'
+        organisation:
+          $ref: '#/components/schemas/IdName'
+        labs:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdName'
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdName'
+      required:
+      - id
+      - name
+      - account_type
+    AccountSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        account_type:
+          type: string
+          description: 'Values: `lab`, `department`, `organisation`.'
+        organisation:
+          type: integer
+          nullable: true
+          description: Organisation account ID.
+        department:
+          type: integer
+          nullable: true
+          description: Department account ID.
+    AvailableSlot:
+      type: object
+      properties:
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+    AvailableSlotsResponse:
+      type: object
+      properties:
+        available_slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailableSlot'
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        cost:
+          type: string
+          nullable: true
+          description: Booking cost as a decimal string.
+        currency:
+          type: string
+        charging_type:
+          type: string
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        requested_at:
+          type: string
+          format: date-time
+        booking_type:
+          type: string
+        status:
+          type: string
+        duration:
+          type: number
+          description: Duration in minutes.
+        add_ons:
+          type: string
+          nullable: true
+          description: Add-on names separated by "; ".
+        maintenance_provider:
+          type: string
+          nullable: true
+        maintenance_type:
+          type: string
+          nullable: true
+        custom_form_responses:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomFormResponseReference'
+        requester_group:
+          type: object
+          properties:
+            name:
+              type: string
+        equipment:
+          $ref: '#/components/schemas/IdName'
+        parent_equipment:
+          $ref: '#/components/schemas/IdName'
+        requester_lab:
+          $ref: '#/components/schemas/IdName'
+        requester_organisation:
+          $ref: '#/components/schemas/IdName'
+        provider_lab:
+          $ref: '#/components/schemas/IdName'
+        provider_organisation:
+          $ref: '#/components/schemas/IdName'
+        creator:
+          $ref: '#/components/schemas/IdName'
+        requester:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            email:
+              type: string
+            sector:
+              type: string
+        last_public_note:
+          $ref: '#/components/schemas/LastPublicNote'
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingProject'
+    BookingAddOn:
+      type: object
+      properties:
+        equipment_addon:
+          type: string
+          description: Add-on name. Use this in `add_ons` when creating or updating a booking.
+        base_unit:
+          type: string
+        base_quantity:
+          type: string
+        base_price:
+          type: number
+        mandatory:
+          type: boolean
+    BookingAddOnInput:
+      type: object
+      properties:
+        equipment_addon:
+          type: string
+          description: Name from GET /equipment/{id}/booking_add_ons.
+        quantity:
+          type: string
+          description: Quantity as a decimal string, e.g. "2" or "1.5".
+    BookingAddOnsResponse:
+      type: object
+      properties:
+        add_ons:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingAddOn'
+    BookingCreateRequest:
+      type: object
+      properties:
+        account_id:
+          type: integer
+          description: Lab account ID. Defaults to the equipment's lab.
+        equipment_id:
+          type: integer
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        booking_type:
+          type: string
+          enum:
+          - use
+          - maintenance
+          description: Defaults to `use`.
+        maintenance_provider:
+          type: string
+          enum:
+          - internal
+          - external
+          description: Required for maintenance bookings only.
+        maintenance_type:
+          type: string
+          enum:
+          - preventative_maintenance
+          - cleaning
+          - calibration
+          - breakdown
+          - repair
+          - other
+          description: Required for maintenance bookings only.
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingProjectInput'
+        booking_on_behalf_of:
+          type: integer
+          description: User ID to create the booking for (lab admins/instructors).
+        invited_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingInvitedUserInput'
+        recurrence:
+          $ref: '#/components/schemas/BookingRecurrenceInput'
+        add_ons:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingAddOnInput'
+      required:
+      - equipment_id
+      - start_time
+      - end_time
+    BookingFundingCodeInput:
+      type: object
+      properties:
+        funding_code_id:
+          type: integer
+        funding_code_percentage:
+          type: integer
+          description: 0-100. Percentages for a project must total 100.
+      required:
+      - funding_code_id
+      - funding_code_percentage
+    BookingInvitation:
+      title: Booking Invitation
+      type: object
+      description: A booking invitation for a specific user.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        status:
+          type: string
+          readOnly: true
+          description: 'Values: `pending`, `accepted`, `rejected`.'
+        booking_id:
+          type: integer
+          readOnly: true
+          description: ID of the booking this invitation belongs to.
+        reject_reason:
+          type: string
+          nullable: true
+          readOnly: true
+        start_time:
+          type: string
+          format: date-time
+          readOnly: true
+        end_time:
+          type: string
+          format: date-time
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        user:
+          type: object
+          readOnly: true
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+          required:
+          - id
+          - name
+      required:
+      - id
+      - status
+      - booking_id
+    BookingInvitationRespondRequest:
+      title: Booking Invitation Respond Request
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          enum:
+          - accept
+          - reject
+          description: 'The action to take on the invitation.
+
+            - `accept` — confirm attendance; may trigger calendar sync and notifications
+
+            - `reject` — decline the invitation; optionally include `reject_reason`
+
+            '
+        reject_reason:
+          type: string
+          description: Optional free-text reason stored when `status` is `reject`. Ignored when accepting.
+        request_scope:
+          type: string
+          enum:
+          - current
+          - subsequent
+          - all
+          description: 'For recurring bookings only. Controls which invitations in the series are affected.
+
+
+            Server default: current.'
+        accept_available:
+          type: boolean
+          description: 'When accepting with `request_scope` of `subsequent` or `all`, controls conflict behaviour.
+
+            If `false` (default) and scheduling conflicts exist, no invitations are accepted.
+
+            If `true`, non-conflicting invitations are accepted and conflicting ones are returned in `conflicting_invitations`.
+
+
+            Server default: False.'
+    BookingInvitationRespondResponse:
+      type: object
+      properties:
+        booking_invitation:
+          $ref: '#/components/schemas/BookingInvitation'
+        processed_invitations:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingInvitation'
+        conflicting_invitations:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingInvitation'
+        errors:
+          type: array
+          items:
+            type: object
+    BookingInvitedUserInput:
+      type: object
+      properties:
+        user_id:
+          type: integer
+      required:
+      - user_id
+    BookingNote:
+      type: object
+      properties:
+        note_id:
+          type: integer
+        note_text:
+          type: string
+        note_author:
+          type: string
+        note_user_id:
+          type: integer
+        note_file_signed_id:
+          type: string
+          nullable: true
+    BookingNoteInput:
+      type: object
+      properties:
+        note_text:
+          type: string
+        note_file_signed_id:
+          type: string
+          nullable: true
+          description: signed_id from POST /uploads (purpose `booking_note`) to attach a file.
+    BookingNoteRequest:
+      type: object
+      properties:
+        booking_note:
+          $ref: '#/components/schemas/BookingNoteInput'
+      required:
+      - booking_note
+    BookingNoteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        booking_id:
+          type: integer
+        booking_note:
+          $ref: '#/components/schemas/BookingNote'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        errors:
+          type: array
+          items:
+            type: object
+    BookingProject:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        supervisor:
+          type: string
+        funding_codes:
+          type: array
+          items:
+            type: object
+    BookingProjectInput:
+      type: object
+      properties:
+        project_id:
+          type: integer
+        funding_codes:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingFundingCodeInput'
+      required:
+      - project_id
+    BookingRecurrenceInput:
+      type: object
+      properties:
+        recurrence_type:
+          type: string
+          enum:
+          - daily
+          - weekly
+          - monthly_absolute
+          - monthly_relative
+          - yearly
+        recurrence_interval:
+          type: integer
+          description: Repeat every N days/weeks/months/years. Must be positive.
+        recurrence_end:
+          type: string
+          format: date
+          description: Last date of the series (YYYY-MM-DD).
+        recurrence_days:
+          type: array
+          items:
+            type: string
+            enum:
+            - monday
+            - tuesday
+            - wednesday
+            - thursday
+            - friday
+            - saturday
+            - sunday
+          description: 'Weekly only: the days to repeat on.'
+        recurrence_date:
+          type: integer
+          description: 'monthly_absolute only: day of the month (must match the start date).'
+        recurrence_action:
+          type: string
+          enum:
+          - skip_conflict
+          - overlap_existing
+          - decline_existing
+          description: What to do on conflicts. `overlap_existing`/`decline_existing` need lab admin/instructor rights.
+      required:
+      - recurrence_type
+      - recurrence_interval
+      - recurrence_end
+    BookingSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        equipment_id:
+          type: integer
+        user_id:
+          type: integer
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        requested_at:
+          type: string
+          format: date-time
+        status:
+          type: string
+        booking_type:
+          type: string
+        maintenance_provider:
+          type: string
+          nullable: true
+        maintenance_type:
+          type: string
+          nullable: true
+        equipment:
+          type: object
+          properties:
+            name:
+              type: string
+        last_public_note:
+          $ref: '#/components/schemas/LastPublicNote'
+    BookingUpdateRequest:
+      type: object
+      properties:
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        maintenance_provider:
+          type: string
+          enum:
+          - internal
+          - external
+          description: Maintenance bookings only.
+        maintenance_type:
+          type: string
+          enum:
+          - preventative_maintenance
+          - cleaning
+          - calibration
+          - breakdown
+          - repair
+          - other
+          description: Maintenance bookings only.
+        invited_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingInvitedUserInput'
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingProjectInput'
+        add_ons:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingAddOnInput'
+      description: Send only the fields to change. At least one field is required.
+    BookingWriteAddOn:
+      type: object
+      properties:
+        equipment_addon:
+          type: string
+        quantity:
+          type: number
+          nullable: true
+        base_unit:
+          type: string
+        base_quantity:
+          type: string
+        base_price:
+          type: number
+        price:
+          type: number
+        mandatory:
+          type: boolean
+    BookingWriteConfiguration:
+      type: object
+      properties:
+        id:
+          type: integer
+        equipment_id:
+          type: integer
+        equipment:
+          $ref: '#/components/schemas/IdName'
+        status:
+          type: string
+        account:
+          $ref: '#/components/schemas/IdName'
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        creator:
+          $ref: '#/components/schemas/IdName'
+        booking_owner:
+          $ref: '#/components/schemas/IdName'
+        booking_type:
+          type: string
+        maintenance_provider:
+          type: string
+          nullable: true
+        maintenance_type:
+          type: string
+          nullable: true
+        invited_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingWriteInvitedUser'
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingWriteProject'
+        recurrence:
+          $ref: '#/components/schemas/BookingWriteRecurrence'
+        add_ons:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingWriteAddOn'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      description: The booking as saved.
+    BookingWriteFundingCode:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        percentage:
+          type: number
+    BookingWriteInvitedUser:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        user_name:
+          type: string
+    BookingWriteProject:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        funding_codes:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingWriteFundingCode'
+    BookingWriteRecurrence:
+      type: object
+      properties:
+        recurrence_action:
+          type: string
+        recurrence_type:
+          type: string
+        recurrence_days:
+          type: array
+          items:
+            type: string
+          nullable: true
+        recurrence_day:
+          type: string
+          nullable: true
+        recurrence_week:
+          type: integer
+          nullable: true
+        recurrence_date:
+          type: integer
+          nullable: true
+        recurrence_interval:
+          type: integer
+        recurrence_end:
+          type: string
+    BookingWriteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          nullable: true
+        message:
+          type: string
+        booking:
+          $ref: '#/components/schemas/BookingWriteConfiguration'
+        errors:
+          type: array
+          items:
+            type: object
+        error_messages:
+          type: array
+          items:
+            type: string
+    ContactAccessRole:
+      title: Contact Access Role
+      type: object
+      description: An access role that may be assigned as an equipment contact person.
+      properties:
+        id:
+          type: integer
+          description: Access role ID. Use this value in `contact_access_role_ids`.
+        user_id:
+          type: integer
+          description: User ID of the contact person.
+        account_id:
+          type: integer
+          description: Lab account ID.
+        name:
+          type: string
+          description: Full name of the contact person.
+        email:
+          type: string
+          format: email
+          description: Email address of the contact person.
+        role:
+          type: string
+          description: 'Access role type.
+
+
+            Values: `admin`, `instructor`.'
+      required:
+      - id
+      - user_id
+      - account_id
+      - name
+      - email
+      - role
+    ContactPeopleResponse:
+      type: object
+      properties:
+        contact_access_roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactAccessRole'
+      required:
+      - contact_access_roles
+    CustomFormResponse:
+      title: Custom Form Response
+      type: object
+      description: Submitted custom form response for a booking.
+      properties:
+        custom_form_response_id:
+          type: integer
+          description: Custom form response ID
+        custom_form_id:
+          type: integer
+          description: Custom form ID
+        custom_form_version_id:
+          type: integer
+          description: Custom form version ID
+        booking_reference_id:
+          type: integer
+          description: Booking reference ID
+        created_by:
+          type: string
+          description: Plain English name of the user who submitted the response.
+        created_at:
+          type: string
+          format: date-time
+          description: Date/time the response was created (ISO 8601).
+        updated_at:
+          type: string
+          format: date-time
+          description: Date/time the response was last updated (ISO 8601).
+        form_response:
+          type: array
+          items:
+            type: object
+      required:
+      - custom_form_response_id
+      - custom_form_id
+      - custom_form_version_id
+      - booking_reference_id
+      - created_by
+      - created_at
+      - updated_at
+      - form_response
+    CustomFormResponseReference:
+      type: object
+      properties:
+        response_id:
+          type: integer
+        custom_form_version_id:
+          type: integer
+    Equipment:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        room:
+          type: string
+        manufacturer:
+          type: string
+        model_number:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        currency:
+          type: string
+        charging_type:
+          type: string
+        serial_number:
+          type: string
+        manufacturing_year:
+          type: integer
+          nullable: true
+        category:
+          type: string
+        subcategory:
+          type: string
+        description:
+          type: string
+        image_urls:
+          type: array
+          items:
+            type: string
+        lab:
+          $ref: '#/components/schemas/IdName'
+        custom_addons:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentPricingAddon'
+    EquipmentAdvanceBookingNotice:
+      title: Equipment Advance Booking Notice
+      type: object
+      description: Minimum or maximum advance notice required before a booking can start.
+      required:
+      - unit
+      properties:
+        unit:
+          $ref: '#/components/schemas/EquipmentAdvanceNoticeUnit'
+        duration:
+          description: 'Notice period length in the given `unit`.
+
+            Examples: `24` with `hours`, `30` with `days`, `2` with `weeks`.
+
+            '
+          example: 24
+          type: number
+      example:
+        unit: hours
+        duration: 24
+    EquipmentAdvanceNoticeUnit:
+      title: Equipment Advance Notice Unit
+      type: string
+      description: 'Unit for minimum/maximum advance booking notice.
+
+
+        Values: `hours`, `days`, `weeks`.'
+      example: hours
+    EquipmentAdvancePricing:
+      title: Equipment Advance Pricing
+      type: object
+      description: Advanced per-day/time-slot pricing. Optional; use when `pricing.pricing` is `true`.
+      required:
+      - internal
+      - groups
+      properties:
+        internal:
+          $ref: '#/components/schemas/EquipmentAdvancePricingSubPricing'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentAdvancePricingGroup'
+          description: Per-group advance pricing overrides. Pass `[]` if none.
+          example: []
+      example:
+        internal:
+          default_price: 25
+          days:
+            monday:
+            - day: monday
+              start_time: 09:00
+              end_time: '12:00'
+              price: 40
+            tuesday: []
+            wednesday: []
+            thursday: []
+            friday: []
+            saturday: []
+            sunday: []
+        groups: []
+    EquipmentAdvancePricingDays:
+      title: Equipment Advance Pricing Days
+      type: object
+      description: Per-weekday arrays of advance pricing slots. Keys are lowercase day names (`monday`–`sunday`).
+      properties:
+        monday:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentAdvancePricingSlot'
+          example:
+          - day: monday
+            start_time: 09:00
+            end_time: '12:00'
+            price: 40
+        tuesday:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentAdvancePricingSlot'
+          example: []
+        wednesday:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentAdvancePricingSlot'
+          example: []
+        thursday:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentAdvancePricingSlot'
+          example: []
+        friday:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentAdvancePricingSlot'
+          example: []
+        saturday:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentAdvancePricingSlot'
+          example: []
+        sunday:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentAdvancePricingSlot'
+          example: []
+      example:
+        monday:
+        - day: monday
+          start_time: 09:00
+          end_time: '12:00'
+          price: 40
+        tuesday: []
+        wednesday: []
+        thursday: []
+        friday: []
+        saturday: []
+        sunday: []
+    EquipmentAdvancePricingGroup:
+      title: Equipment Advance Pricing Group
+      type: object
+      description: Advance pricing configuration for a specific user group.
+      required:
+      - default_price
+      - days
+      - group_id
+      - group_name
+      properties:
+        default_price:
+          $ref: '#/components/schemas/EquipmentNumeric'
+        days:
+          $ref: '#/components/schemas/EquipmentAdvancePricingDays'
+        group_id:
+          type: string
+          minLength: 1
+          description: ID of the user group this pricing applies to.
+          example: '42'
+        group_name:
+          type: string
+          minLength: 1
+          description: Display name of the group (for reference).
+          example: Research Group A
+      example:
+        default_price: 20
+        days:
+          monday: []
+          tuesday: []
+          wednesday: []
+          thursday: []
+          friday: []
+          saturday: []
+          sunday: []
+        group_id: '42'
+        group_name: Research Group A
+    EquipmentAdvancePricingSlot:
+      title: Equipment Advance Pricing Slot
+      type: object
+      description: A time-bounded price override for a specific day pattern.
+      required:
+      - day
+      - start_time
+      - end_time
+      - price
+      properties:
+        day:
+          type: string
+          description: 'Day or day-group this slot applies to.
+
+
+            Values: `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`, `weekdays`, `weekends`,
+            `all`.'
+          example: monday
+        start_time:
+          type: string
+          pattern: ^([0-9][0-9]):([0-5][0-9])$
+          description: Slot start time (`HH:MM`).
+          example: 09:00
+        end_time:
+          type: string
+          pattern: ^([0-9][0-9]):([0-5][0-9])$
+          description: Slot end time (`HH:MM`). Must be after `start_time`.
+          example: '12:00'
+        price:
+          $ref: '#/components/schemas/EquipmentNumeric'
+        charity:
+          $ref: '#/components/schemas/EquipmentNumeric'
+        research_council:
+          $ref: '#/components/schemas/EquipmentNumeric'
+      example:
+        day: monday
+        start_time: 09:00
+        end_time: '12:00'
+        price: 40
+        charity: 20
+        research_council: 30
+    EquipmentAdvancePricingSubPricing:
+      title: Equipment Advance Pricing Sub-Pricing
+      type: object
+      description: Default and per-day-slot pricing for internal users or a group.
+      required:
+      - default_price
+      - days
+      properties:
+        default_price:
+          $ref: '#/components/schemas/EquipmentNumeric'
+        days:
+          $ref: '#/components/schemas/EquipmentAdvancePricingDays'
+      example:
+        default_price: 25
+        days:
+          monday:
+          - day: monday
+            start_time: 09:00
+            end_time: '12:00'
+            price: 40
+          tuesday: []
+          wednesday: []
+          thursday: []
+          friday: []
+          saturday: []
+          sunday: []
+    EquipmentAttachment:
+      type: object
+      properties:
+        signed_id:
+          type: string
+        filename:
+          type: string
+        content_type:
+          type: string
+        byte_size:
+          type: integer
+    EquipmentAttachmentInput:
+      type: object
+      properties:
+        action:
+          type: string
+          enum:
+          - extend
+          - replace
+          - destroy
+          - remove
+          description: '`extend` adds, `replace` replaces all, `destroy` removes all, `remove` removes the listed signed_ids
+            (update only).'
+        signed_ids:
+          type: array
+          items:
+            type: string
+      description: Attachment changes. signed_ids come from POST /uploads.
+    EquipmentBookingRulesInput:
+      title: Equipment Booking Rules Input
+      type: object
+      description: Booking constraint configuration. Pass as the `booking_rules` property on create/update.
+      properties:
+        booking_rules:
+          type: boolean
+          description: 'Whether custom booking rules are enabled.
+
+
+            Server default: False.'
+          example: true
+        business_hours:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentBusinessHours'
+          description: Per-day opening hours for internal bookers. Optional.
+          example:
+          - account_type: internal
+            monday:
+              allow: true
+              start_time: 09:00
+              end_time: '17:00'
+            tuesday:
+              allow: true
+              start_time: 09:00
+              end_time: '17:00'
+            wednesday:
+              allow: true
+              start_time: 09:00
+              end_time: '17:00'
+            thursday:
+              allow: true
+              start_time: 09:00
+              end_time: '17:00'
+            friday:
+              allow: true
+              start_time: 09:00
+              end_time: '17:00'
+            saturday:
+              allow: false
+            sunday:
+              allow: false
+        min_booking_time:
+          $ref: '#/components/schemas/EquipmentTimeConfig'
+        max_booking_time:
+          $ref: '#/components/schemas/EquipmentTimeConfig'
+        time_step:
+          $ref: '#/components/schemas/EquipmentTimeStep'
+        start_step:
+          $ref: '#/components/schemas/EquipmentStartStep'
+        advance_booking_must:
+          $ref: '#/components/schemas/EquipmentAdvanceBookingNotice'
+        advance_booking_can:
+          $ref: '#/components/schemas/EquipmentAdvanceBookingNotice'
+      example:
+        booking_rules: true
+        min_booking_time:
+          unit: perHour
+          duration: 1
+        max_booking_time:
+          unit: perHour
+          duration: 8
+        time_step:
+          unit: perMinute
+          duration: '15'
+        start_step:
+          start_step: halfHour
+        advance_booking_must:
+          unit: hours
+          duration: 24
+        advance_booking_can:
+          unit: days
+          duration: 30
+        business_hours:
+        - account_type: internal
+          monday:
+            allow: true
+            start_time: 09:00
+            end_time: '17:00'
+          tuesday:
+            allow: true
+            start_time: 09:00
+            end_time: '17:00'
+          wednesday:
+            allow: true
+            start_time: 09:00
+            end_time: '17:00'
+          thursday:
+            allow: true
+            start_time: 09:00
+            end_time: '17:00'
+          friday:
+            allow: true
+            start_time: 09:00
+            end_time: '17:00'
+          saturday:
+            allow: false
+          sunday:
+            allow: false
+    EquipmentBusinessHours:
+      title: Equipment Business Hours
+      type: object
+      description: Per-day availability windows for internal users. Pass inside `booking_rules.business_hours` as an array
+        with one object per account type.
+      required:
+      - account_type
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+      - saturday
+      - sunday
+      properties:
+        account_type:
+          type: string
+          description: 'Account type this schedule applies to.
+
+
+            Values: `internal`.'
+          example: internal
+        monday:
+          $ref: '#/components/schemas/EquipmentDailyUsageSchedule'
+        tuesday:
+          $ref: '#/components/schemas/EquipmentDailyUsageSchedule'
+        wednesday:
+          $ref: '#/components/schemas/EquipmentDailyUsageSchedule'
+        thursday:
+          $ref: '#/components/schemas/EquipmentDailyUsageSchedule'
+        friday:
+          $ref: '#/components/schemas/EquipmentDailyUsageSchedule'
+        saturday:
+          $ref: '#/components/schemas/EquipmentDailyUsageSchedule'
+        sunday:
+          $ref: '#/components/schemas/EquipmentDailyUsageSchedule'
+      example:
+        account_type: internal
+        monday:
+          allow: true
+          start_time: 09:00
+          end_time: '17:00'
+        tuesday:
+          allow: true
+          start_time: 09:00
+          end_time: '17:00'
+        wednesday:
+          allow: true
+          start_time: 09:00
+          end_time: '17:00'
+        thursday:
+          allow: true
+          start_time: 09:00
+          end_time: '17:00'
+        friday:
+          allow: true
+          start_time: 09:00
+          end_time: '17:00'
+        saturday:
+          allow: false
+        sunday:
+          allow: false
+    EquipmentConfiguration:
+      title: Equipment Configuration
+      type: object
+      description: Full equipment configuration returned after create or update.
+      properties:
+        id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        account_id:
+          type: integer
+        lab:
+          $ref: '#/components/schemas/IdName'
+        name:
+          type: string
+        room:
+          type: string
+        category:
+          type: string
+        subcategory:
+          type: string
+        manufacturer:
+          type: string
+        model_number:
+          type: string
+        manufacturing_year:
+          type: integer
+          nullable: true
+        serial_number:
+          type: string
+        availability_status:
+          type: string
+        description:
+          type: string
+          description: Plain-text description.
+        lab_rules:
+          type: string
+          description: Plain-text lab-specific usage rules.
+        safety_features:
+          type: string
+          description: Plain-text safety information.
+        date_of_purchase:
+          type: string
+          nullable: true
+        internal_id:
+          type: string
+        purchase_price:
+          type: number
+          nullable: true
+        contact_access_role_ids:
+          type: array
+          items:
+            type: integer
+        group_ids:
+          type: array
+          items:
+            type: integer
+        equipment_label_ids:
+          type: array
+          items:
+            type: integer
+        photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentAttachment'
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentAttachment'
+        pricing:
+          $ref: '#/components/schemas/EquipmentPricingInput'
+        booking_rules:
+          $ref: '#/components/schemas/EquipmentBookingRulesInput'
+        maintenance:
+          $ref: '#/components/schemas/EquipmentMaintenanceInput'
+      required:
+      - id
+      - account_id
+      - name
+      - category
+    EquipmentCreateRequest:
+      title: Equipment Mutable Fields
+      description: 'Request body for `POST /equipment`. Expand nested objects (`pricing`, `booking_rules`, `maintenance`)
+        for every sub-field, type, and allowed value.
+
+        '
+      type: object
+      additionalProperties: false
+      properties:
+        account_id:
+          type: integer
+          description: Lab account ID where the equipment belongs. **Required on create.** Cannot be changed on update.
+          example: 123
+        name:
+          type: string
+          minLength: 1
+          description: Display name of the equipment. **Required on create.**
+          example: API Microscope
+        room:
+          type: string
+          description: Physical location or room name (max 255 characters).
+          example: Lab 4A
+        category:
+          type: string
+          minLength: 1
+          enum:
+          - Equipment
+          - Parent equipment
+          - Room/Space
+          - Desk/Bench
+          - Other
+          description: Equipment category. **Required on create.**
+          example: Equipment
+        subcategory:
+          type: string
+          description: Subcategory name matching the selected `category`. Required when the category has subcategories (e.g.
+            `Microscopy & Imaging` for `Equipment`).
+          example: Microscopy & Imaging
+        manufacturer:
+          type: string
+          description: Manufacturer name. Required by business rules for `Equipment`, `Other`, and `Parent equipment` categories
+            (max 200 characters).
+          example: Acme
+        model_number:
+          type: string
+          description: Model or catalogue number. Required by business rules for `Equipment`, `Other`, and `Parent equipment`
+            categories (max 200 characters).
+          example: X1
+        manufacturing_year:
+          type: number
+        serial_number:
+          type: string
+          description: Equipment serial number (max 255 characters).
+          example: SN-12345
+        availability_status:
+          type: string
+          enum:
+          - Always Available
+          - Unavailable
+          description: 'Whether the equipment can be booked.
+
+
+            Server default: Always Available.'
+          example: Always Available
+        description:
+          type: string
+          description: Plain-text description. Rich-text editor formats (HTML or Quill JSON) are not accepted — send plain
+            text only.
+          example: Confocal microscope for live-cell imaging.
+        lab_rules:
+          type: string
+          description: Plain-text lab-specific usage rules shown to bookers. Send plain text only.
+          example: Clean lenses after each session.
+        safety_features:
+          type: string
+          description: Plain-text safety information shown to bookers. Send plain text only.
+          example: Laser safety goggles required.
+        date_of_purchase:
+          type: string
+          description: Purchase date as an ISO 8601 date string (e.g. `2024-01-15`).
+          example: '2024-01-15'
+        internal_id:
+          type: string
+          description: Internal inventory identifier (max 100 characters; unique per lab).
+          example: EQ-0042
+        purchase_price:
+          type: number
+        contact_access_role_ids:
+          type: array
+          items:
+            type: integer
+            example: 88
+          description: Access role IDs for equipment contact people. Use `GET /equipment/contact_people?account_id={id}` to
+            list valid IDs.
+          example:
+          - 88
+          - 91
+        group_ids:
+          type: array
+          items:
+            type: integer
+            example: 15
+          description: IDs of user groups that should have access to book this equipment.
+          example:
+          - 15
+          - 22
+        equipment_label_ids:
+          type: array
+          items:
+            type: integer
+            example: 3
+          description: IDs of equipment labels to apply.
+          example:
+          - 3
+        maintenance_contract_ids:
+          type: array
+          items:
+            type: integer
+            example: 7
+          description: IDs of maintenance contracts. May also be set inside `maintenance.maintenance_contract_ids`.
+          example:
+          - 7
+        photos:
+          $ref: '#/components/schemas/EquipmentAttachmentInput'
+        documents:
+          $ref: '#/components/schemas/EquipmentAttachmentInput'
+        pricing:
+          $ref: '#/components/schemas/EquipmentPricingInput'
+        booking_rules:
+          $ref: '#/components/schemas/EquipmentBookingRulesInput'
+        maintenance:
+          $ref: '#/components/schemas/EquipmentMaintenanceInput'
+      example:
+        account_id: 123
+        name: API Microscope
+        room: Lab 4A
+        category: Equipment
+        subcategory: Microscopy & Imaging
+        manufacturer: Acme
+        model_number: X1
+        manufacturing_year: 2022
+        serial_number: SN-12345
+        availability_status: Always Available
+        description: Confocal microscope for live-cell imaging.
+        lab_rules: Clean lenses after each session.
+        safety_features: Laser safety goggles required.
+        date_of_purchase: '2024-01-15'
+        internal_id: EQ-0042
+        purchase_price: 15000
+        contact_access_role_ids:
+        - 88
+        group_ids:
+        - 15
+        equipment_label_ids:
+        - 3
+        photos:
+        - eyJfcmFpbHMiOnsiZGF0YSI6MTE3OSwicHVyIjoiYmxvYl9pZCJ9fQ==--example
+        pricing:
+          pricing: true
+          currency: GBP
+          charging_type: perHour
+          price_details:
+            internal: 25
+        booking_rules:
+          booking_rules: true
+          min_booking_time:
+            unit: perHour
+            duration: 1
+          max_booking_time:
+            unit: perHour
+            duration: 8
+          time_step:
+            unit: perMinute
+            duration: '15'
+          start_step:
+            start_step: halfHour
+        maintenance:
+          maintenance_contract: true
+          maintenance_contract_ids:
+          - 7
+      required:
+      - account_id
+      - name
+      - category
+    EquipmentDailyUsageSchedule:
+      title: Equipment Daily Usage Schedule
+      type: object
+      description: Opening hours for a single day within business hours configuration.
+      required:
+      - allow
+      properties:
+        allow:
+          type: boolean
+          description: Whether the equipment is bookable on this day.
+          example: true
+        start_time:
+          type: string
+          pattern: ^([0-9][0-9]):([0-5][0-9])$
+          description: Opening time in `HH:MM` (24-hour). Required when `allow` is `true`.
+          example: 09:00
+        end_time:
+          type: string
+          pattern: ^([0-9][0-9]):([0-5][0-9])$
+          description: Closing time in `HH:MM` (24-hour). Required when `allow` is `true`.
+          example: '17:00'
+      example:
+        allow: true
+        start_time: 09:00
+        end_time: '17:00'
+    EquipmentMaintenanceInput:
+      title: Equipment Maintenance Input
+      type: object
+      description: Maintenance contract configuration. Pass as the `maintenance` property on create/update.
+      properties:
+        maintenance_contract:
+          type: boolean
+          description: 'Whether a maintenance contract applies to this equipment.
+
+
+            Server default: False.'
+          example: true
+        maintenance_contract_ids:
+          type: array
+          items:
+            type: integer
+            example: 7
+          description: IDs of maintenance contracts linked to this equipment. Requires lab maintenance feature.
+          example:
+          - 7
+          - 12
+      example:
+        maintenance_contract: true
+        maintenance_contract_ids:
+        - 7
+        - 12
+    EquipmentNumeric:
+      type: number
+      description: Numeric value.
+    EquipmentPriceDetails:
+      title: Equipment Price Details
+      type: object
+      description: Base price configuration. Required when `pricing.pricing` is `true`.
+      required:
+      - internal
+      properties:
+        internal:
+          $ref: '#/components/schemas/EquipmentNumeric'
+      example:
+        internal: 25
+    EquipmentPricingAddon:
+      title: Equipment Pricing Addon
+      type: object
+      description: Optional add-on charge line item. Pass in `pricing.custom_addons` or `pricing.other_attributes`.
+      required:
+      - id
+      - equipment_addon
+      - mandatory_external
+      - mandatory_internal
+      - price
+      - quantity
+      properties:
+        id:
+          description: Add-on identifier.
+          example: 1
+          type: integer
+        equipment_addon:
+          type: string
+          minLength: 1
+          description: Add-on name or label.
+          example: Sample preparation
+        mandatory_external:
+          type: string
+          description: 'Mandatory flag for external bookers. Empty string means not mandatory.
+
+
+            Values: `AAV`, `FBO`, `OPT`.'
+          example: ''
+        mandatory_internal:
+          type: string
+          description: 'Mandatory flag for internal bookers. Empty string means not mandatory.
+
+
+            Values: `AAV`, `FBO`, `OPT`.'
+          example: OPT
+        price:
+          $ref: '#/components/schemas/EquipmentNumeric'
+        quantity:
+          type: string
+          description: 'How the add-on quantity is determined.
+
+
+            Values: `fixed`, `as_booking_hours`, `as_booking_days`, `user_specified`.'
+          example: fixed
+        unit:
+          type: string
+          description: 'Billing unit. Required when `quantity` is `user_specified`.
+
+            Auto-set to `per_hour` when `quantity` is `as_booking_hours`, `per_day` when `as_booking_days`, and `""` when
+            `fixed`.
+
+
+            Values: `per_sample`, `per_day`, `per_hour`, `per_run`.'
+          example: ''
+      example:
+        id: 1
+        equipment_addon: Sample preparation
+        mandatory_external: ''
+        mandatory_internal: OPT
+        price: 10
+        quantity: fixed
+        unit: ''
+    EquipmentPricingInput:
+      title: Equipment Pricing Input
+      type: object
+      description: 'Pricing configuration object. Pass as the top-level `pricing` property on create/update.
+
+
+        When `pricing` is `true`, `price_details.internal` is required.
+
+        '
+      properties:
+        pricing:
+          type: boolean
+          description: 'Whether charging is enabled for this equipment.
+
+
+            Server default: False.'
+          example: true
+        currency:
+          type: string
+          description: 'ISO currency code for all prices on this equipment.
+
+
+            Server default: GBP.
+
+
+            Values: `GBP`, `USD`, `EUR`, `AED`, `AUD`, `BRL`, `CAD`, `CHF`, `CLP`, `DKK`, `HKD`, `ILS`, `INR`, `ISK`, `JPY`,
+            `NOK`, `NZD`, `PLN`, `RUB`, `SEK`, `SGD`, `TRY`, `ZAR`.'
+          example: GBP
+        available_internally:
+          type: boolean
+          description: 'Whether internal lab users can book at internal rates.
+
+
+            Server default: True.'
+          example: true
+        charging_type:
+          type: string
+          description: 'How the base price is charged.
+
+
+            Server default: perHour.
+
+
+            Values: `perHour`, `perDay`.'
+          example: perHour
+        purchase_price:
+          $ref: '#/components/schemas/EquipmentNumeric'
+        custom_addons:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentPricingAddon'
+          description: Optional add-on charges. Alias of `other_attributes`.
+          example:
+          - id: 1
+            equipment_addon: Sample preparation
+            mandatory_external: ''
+            mandatory_internal: OPT
+            price: 10
+            quantity: fixed
+            unit: ''
+        other_attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/EquipmentPricingAddon'
+          description: Optional add-on charges. Alias of `custom_addons`.
+          example: []
+        price_details:
+          $ref: '#/components/schemas/EquipmentPriceDetails'
+        advance_pricing:
+          $ref: '#/components/schemas/EquipmentAdvancePricing'
+      example:
+        pricing: true
+        currency: GBP
+        available_internally: true
+        charging_type: perHour
+        purchase_price: 15000
+        price_details:
+          internal: 25
+        custom_addons:
+        - id: 1
+          equipment_addon: Sample preparation
+          mandatory_external: ''
+          mandatory_internal: OPT
+          price: 10
+          quantity: fixed
+          unit: ''
+        advance_pricing:
+          internal:
+            default_price: 25
+            days:
+              monday:
+              - day: monday
+                start_time: 09:00
+                end_time: '12:00'
+                price: 40
+              tuesday: []
+              wednesday: []
+              thursday: []
+              friday: []
+              saturday: []
+              sunday: []
+          groups: []
+    EquipmentStartStep:
+      title: Equipment Start Step
+      type: object
+      description: Controls when bookings may start within each hour or day.
+      required:
+      - start_step
+      properties:
+        start_step:
+          type: string
+          description: 'When bookings can start:
+
+            - `quarter` — every 15 minutes
+
+            - `halfHour` — every 30 minutes
+
+            - `fullHour` — on the hour
+
+            - `fullDay` — once per day
+
+            - `custom` — use `custom` array
+
+
+            Values: `quarter`, `halfHour`, `fullHour`, `fullDay`, `custom`.'
+          example: halfHour
+        custom:
+          type: array
+          items:
+            type: string
+            pattern: ^([0-9][0-9]):([0-5][0-9])$
+            example: 09:00
+          description: Required when `start_step` is `custom`. Array of `HH:MM` times when bookings may start.
+          example:
+          - 09:00
+          - '13:00'
+      example:
+        start_step: halfHour
+    EquipmentSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        model:
+          type: string
+        manufacturer:
+          type: string
+        room:
+          type: string
+        description:
+          type: string
+        availability_status:
+          type: string
+        category:
+          type: string
+        subcategory:
+          type: string
+        image_url:
+          type: string
+          nullable: true
+        contact_person:
+          $ref: '#/components/schemas/IdName'
+        contact_persons:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdName'
+        parent_equipment:
+          $ref: '#/components/schemas/IdName'
+    EquipmentTimeConfig:
+      title: Equipment Time Configuration
+      type: object
+      description: A duration with a time unit. Used for `min_booking_time` and `max_booking_time`.
+      required:
+      - unit
+      properties:
+        unit:
+          $ref: '#/components/schemas/EquipmentTimeUnit'
+        duration:
+          description: 'Length of time in the given `unit`. Must be greater than 0. Maximum booking time cannot exceed 90
+            days.
+
+            Examples: `1`, `8`, `"1.5"`.
+
+            '
+          example: 1
+          type: number
+      example:
+        unit: perHour
+        duration: 1
+    EquipmentTimeStep:
+      title: Equipment Time Step
+      type: object
+      description: Booking time increment — the smallest step users can extend a booking by.
+      required:
+      - unit
+      properties:
+        unit:
+          $ref: '#/components/schemas/EquipmentTimeUnit'
+        duration:
+          type: string
+          description: 'Increment length in the given `unit`, as a string. Omit or send `""` to use the unit default
+
+            (`perMinute`/`perHour` → 1 hour equivalent fallback; `perDay` → 1 day).
+
+            Examples: `"15"` with `perMinute`, `"1"` with `perHour`, `"1"` with `perDay`.
+
+            '
+          example: '15'
+      example:
+        unit: perMinute
+        duration: '15'
+    EquipmentTimeUnit:
+      title: Equipment Time Unit
+      type: string
+      description: 'Time unit for booking durations and increments.
+
+
+        Values: `perMinute`, `perHour`, `perDay`.'
+      example: perHour
+    EquipmentUpdateRequest:
+      title: Equipment Mutable Fields
+      description: 'Request body for `PATCH /equipment/{id}`. Send only fields to change. Expand nested objects for the full
+        parameter reference. At least one property required.
+
+        '
+      type: object
+      additionalProperties: false
+      properties:
+        account_id:
+          type: integer
+          description: Lab account ID where the equipment belongs. **Required on create.** Cannot be changed on update.
+          example: 123
+        name:
+          type: string
+          minLength: 1
+          description: Display name of the equipment. **Required on create.**
+          example: API Microscope
+        room:
+          type: string
+          description: Physical location or room name (max 255 characters).
+          example: Lab 4A
+        category:
+          type: string
+          minLength: 1
+          enum:
+          - Equipment
+          - Parent equipment
+          - Room/Space
+          - Desk/Bench
+          - Other
+          description: Equipment category. **Required on create.**
+          example: Equipment
+        subcategory:
+          type: string
+          description: Subcategory name matching the selected `category`. Required when the category has subcategories (e.g.
+            `Microscopy & Imaging` for `Equipment`).
+          example: Microscopy & Imaging
+        manufacturer:
+          type: string
+          description: Manufacturer name. Required by business rules for `Equipment`, `Other`, and `Parent equipment` categories
+            (max 200 characters).
+          example: Acme
+        model_number:
+          type: string
+          description: Model or catalogue number. Required by business rules for `Equipment`, `Other`, and `Parent equipment`
+            categories (max 200 characters).
+          example: X1
+        manufacturing_year:
+          type: number
+        serial_number:
+          type: string
+          description: Equipment serial number (max 255 characters).
+          example: SN-12345
+        availability_status:
+          type: string
+          enum:
+          - Always Available
+          - Unavailable
+          description: 'Whether the equipment can be booked.
+
+
+            Server default: Always Available.'
+          example: Always Available
+        description:
+          type: string
+          description: Plain-text description. Rich-text editor formats (HTML or Quill JSON) are not accepted — send plain
+            text only.
+          example: Confocal microscope for live-cell imaging.
+        lab_rules:
+          type: string
+          description: Plain-text lab-specific usage rules shown to bookers. Send plain text only.
+          example: Clean lenses after each session.
+        safety_features:
+          type: string
+          description: Plain-text safety information shown to bookers. Send plain text only.
+          example: Laser safety goggles required.
+        date_of_purchase:
+          type: string
+          description: Purchase date as an ISO 8601 date string (e.g. `2024-01-15`).
+          example: '2024-01-15'
+        internal_id:
+          type: string
+          description: Internal inventory identifier (max 100 characters; unique per lab).
+          example: EQ-0042
+        purchase_price:
+          type: number
+        contact_access_role_ids:
+          type: array
+          items:
+            type: integer
+            example: 88
+          description: Access role IDs for equipment contact people. Use `GET /equipment/contact_people?account_id={id}` to
+            list valid IDs.
+          example:
+          - 88
+          - 91
+        group_ids:
+          type: array
+          items:
+            type: integer
+            example: 15
+          description: IDs of user groups that should have access to book this equipment.
+          example:
+          - 15
+          - 22
+        equipment_label_ids:
+          type: array
+          items:
+            type: integer
+            example: 3
+          description: IDs of equipment labels to apply.
+          example:
+          - 3
+        maintenance_contract_ids:
+          type: array
+          items:
+            type: integer
+            example: 7
+          description: IDs of maintenance contracts. May also be set inside `maintenance.maintenance_contract_ids`.
+          example:
+          - 7
+        photos:
+          $ref: '#/components/schemas/EquipmentAttachmentInput'
+        documents:
+          $ref: '#/components/schemas/EquipmentAttachmentInput'
+        pricing:
+          $ref: '#/components/schemas/EquipmentPricingInput'
+        booking_rules:
+          $ref: '#/components/schemas/EquipmentBookingRulesInput'
+        maintenance:
+          $ref: '#/components/schemas/EquipmentMaintenanceInput'
+      example:
+        account_id: 123
+        name: API Microscope
+        room: Lab 4A
+        category: Equipment
+        subcategory: Microscopy & Imaging
+        manufacturer: Acme
+        model_number: X1
+        manufacturing_year: 2022
+        serial_number: SN-12345
+        availability_status: Always Available
+        description: Confocal microscope for live-cell imaging.
+        lab_rules: Clean lenses after each session.
+        safety_features: Laser safety goggles required.
+        date_of_purchase: '2024-01-15'
+        internal_id: EQ-0042
+        purchase_price: 15000
+        contact_access_role_ids:
+        - 88
+        group_ids:
+        - 15
+        equipment_label_ids:
+        - 3
+        photos:
+        - eyJfcmFpbHMiOnsiZGF0YSI6MTE3OSwicHVyIjoiYmxvYl9pZCJ9fQ==--example
+        pricing:
+          pricing: true
+          currency: GBP
+          charging_type: perHour
+          price_details:
+            internal: 25
+        booking_rules:
+          booking_rules: true
+          min_booking_time:
+            unit: perHour
+            duration: 1
+          max_booking_time:
+            unit: perHour
+            duration: 8
+          time_step:
+            unit: perMinute
+            duration: '15'
+          start_step:
+            start_step: halfHour
+        maintenance:
+          maintenance_contract: true
+          maintenance_contract_ids:
+          - 7
+    EquipmentUsersResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/LabMember'
+    EquipmentWriteResponse:
+      title: Equipment Write Response
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+          description: Present on successful updates.
+        equipment:
+          $ref: '#/components/schemas/EquipmentConfiguration'
+      required:
+      - success
+      - equipment
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error code, e.g. `unauthorised`, `resource_authorisation_failure`, `resource_not_found`.
+        error_description:
+          type: string
+          description: Human-readable description of `error`.
+        success:
+          type: boolean
+          nullable: true
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+          description: Error details. Validation errors are `{attribute, message}` objects; other errors are plain strings.
+        error_messages:
+          type: object
+          description: 'Human-readable error message(s): a string or an array of strings.'
+      description: Error body. Which fields are present depends on the endpoint and error type.
+    FundingCode:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        funder_name:
+          type: string
+        funder_type:
+          type: string
+        expiry_date:
+          type: string
+          nullable: true
+        allocated_amount:
+          type: number
+        spent_amount:
+          type: number
+    FundingCodeSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          description: The funding code.
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
+    GroupDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        equipment:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdName'
+    IdName:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      description: A reference to another record by ID and name.
+    LabMember:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        account_id:
+          type: integer
+        role:
+          type: string
+          description: Role in the lab, e.g. `admin`, `instructor`, `student`, `guest`.
+        name:
+          type: string
+        email:
+          type: string
+      description: A user who is a member of a lab.
+    LastPublicNote:
+      type: object
+      properties:
+        id:
+          type: integer
+        message:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    Project:
+      type: object
+      properties:
+        name:
+          type: string
+        supervisor:
+          type: string
+        additional_information:
+          type: string
+          nullable: true
+        funding_codes:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundingCode'
+        selected_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdName'
+    ProjectSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        created_by:
+          $ref: '#/components/schemas/IdName'
+        supervisor:
+          type: string
+        funding_codes:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundingCodeSummary'
+    UploadDirectUploadTarget:
+      title: Upload Direct Upload Target
+      type: object
+      description: 'Pre-signed upload target returned by `POST /uploads` (step A). Use these values for **step B** — uploading
+        file bytes directly to storage.
+
+
+        Send an HTTP `PUT` to `url` with every header in `headers` and the raw file as the request body. This request is made
+        to cloud storage, not to the Calira API.
+
+        '
+      required:
+      - url
+      - headers
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Pre-signed URL for step B. Send `PUT` with raw file bytes to this URL. **Short-lived** — typically
+            expires within 5 minutes; register a new upload if it expires before you complete step B.
+          example: https://storage.example.com/rails/active_storage/disk/abc123
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+          description: Headers to send with the PUT of the file bytes to `url`.
+    UploadRegisterRequest:
+      title: Upload Register Request
+      type: object
+      required:
+      - filename
+      - content_type
+      - byte_size
+      - checksum
+      - purpose
+      properties:
+        filename:
+          type: string
+          minLength: 1
+          description: Original file name including extension.
+          example: microscope.jpg
+        content_type:
+          type: string
+          minLength: 1
+          description: MIME type of the file. Must match `purpose` restrictions (see `POST /uploads`).
+          example: image/jpeg
+        byte_size:
+          type: integer
+          minimum: 1
+          description: File size in bytes. Maximum 10 MB for photos, 25 MB for documents.
+          example: 1048576
+        checksum:
+          type: string
+          minLength: 1
+          description: Base64-encoded MD5 digest of the file bytes.
+          example: dGVzdCBjaGVja3N1bQ==
+        purpose:
+          type: string
+          enum:
+          - photo
+          - document
+          - booking_note
+          description: '`photo` / `document` for equipment, `booking_note` for note attachments.'
+    UploadRegisteredResponse:
+      title: Upload Registered Response
+      type: object
+      required:
+      - signed_id
+      - filename
+      - content_type
+      - byte_size
+      - purpose
+      - direct_upload
+      properties:
+        signed_id:
+          type: string
+          description: Reference this value in `photos` or `documents` when creating or updating equipment.
+        filename:
+          type: string
+        content_type:
+          type: string
+        byte_size:
+          type: integer
+        purpose:
+          type: string
+        direct_upload:
+          $ref: '#/components/schemas/UploadDirectUploadTarget'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+      required:
+      - id
+      - first_name
+      - last_name
+      description: The user the access token belongs to.

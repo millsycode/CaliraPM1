@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AssemblyName>Calira.Api</AssemblyName>
+    <PackageId>Calira.Api</PackageId>
+    <OutputType>Library</OutputType>
+    <Authors>Calira</Authors>
+    <Company>Calira</Company>
+    <AssemblyTitle>Calira API client</AssemblyTitle>
+    <Description>Client library for the Calira (formerly Clustermarket) REST API, generated with swagger-codegen from calira-openapi.yaml.</Description>
+    <Copyright>Calira</Copyright>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <RootNamespace>Calira.Api</RootNamespace>
+    <Version>1.0.0</Version>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- CS0472: harmless generator quirk on required enums. CS1591: generated members without XML comments. -->
+    <NoWarn>$(NoWarn);CS0472;CS1591;CS1570;CS1572;CS1573</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FubarCoder.RestSharp.Portable.Core" Version="4.0.7" />
+    <PackageReference Include="FubarCoder.RestSharp.Portable.HttpClient" Version="4.0.7" />
+    <!-- Raised from the generator's 10.0.3, which has a known high-severity vulnerability (GHSA-5crp-9r3c-p9vr). -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="JsonSubTypes" Version="1.2.0" />
+  </ItemGroup>
+
+
+</Project>

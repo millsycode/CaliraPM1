@@ -1,0 +1,296 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Calira API Results</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; color: #1f2328; background: #fff; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #d0d7de; padding: 6px 10px; text-align: left; vertical-align: top; }
+    th { background: #f6f8fa; }
+    pre { white-space: pre-wrap; word-break: break-all; max-width: 600px; }
+  </style>
+</head>
+<body>
+  <h1>Calira API example results</h1>
+  <p>API: <code>https://5975.api.review.clustermarket.dev/v1</code><br>
+     Run at: 2026-10-08 10:39:17</p>
+  <p><b style="color:#1a7f37">30 passed</b> &middot;
+     <b style="color:#cf222e">0 failed</b> &middot;
+     <b style="color:#6e7781">0 skipped</b></p>
+  <table>
+    <tr><th>#</th><th>Step</th><th>Endpoint</th><th>Result</th><th>HTTP status</th><th>Time</th><th>Response (first 500 characters)</th></tr>
+    
+        <tr>
+          <td>1</td>
+          <td>Get current user</td>
+          <td><code>GET /user</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>470 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;id&quot;:1080,&quot;first_name&quot;:&quot;chris&quot;,&quot;last_name&quot;:&quot;mills&quot;}</pre></details></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>List accounts</td>
+          <td><code>GET /accounts</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>580 ms</td>
+          <td><details><summary>show</summary><pre>[{&quot;id&quot;:543,&quot;name&quot;:&quot;Onika Enterprise Lab&quot;,&quot;account_type&quot;:&quot;lab&quot;,&quot;organisation&quot;:null,&quot;department&quot;:null},{&quot;id&quot;:72,&quot;name&quot;:&quot;Ivo&#x27;s Lab Updated&quot;,&quot;account_type&quot;:&quot;lab&quot;,&quot;organisation&quot;:null,&quot;department&quot;:null}]</pre></details></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Get account</td>
+          <td><code>GET /accounts/{id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>338 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;id&quot;:543,&quot;name&quot;:&quot;Onika Enterprise Lab&quot;,&quot;website&quot;:&quot;&quot;,&quot;description&quot;:&quot;test desc&quot;,&quot;sector&quot;:&quot;academia&quot;,&quot;account_type&quot;:&quot;lab&quot;,&quot;timezone&quot;:&quot;Europe/Sofia&quot;,&quot;labs&quot;:[],&quot;departments&quot;:[]}</pre></details></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>List projects</td>
+          <td><code>GET /accounts/{id}/projects</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>529 ms</td>
+          <td><details><summary>show</summary><pre>[{&quot;id&quot;:67684,&quot;name&quot;:&quot;HLA-2 Project&quot;,&quot;created_by&quot;:{&quot;id&quot;:1080,&quot;name&quot;:&quot;chris mills&quot;},&quot;supervisor&quot;:&quot;Chris Mills&quot;,&quot;funding_codes&quot;:[]},{&quot;id&quot;:67682,&quot;name&quot;:&quot;tester&#x27;xxx\&quot;\u003e\u003cimg src=xxx onerror=confirm(123)\u003e&quot;,&quot;created_by&quot;:{&quot;id&quot;:1417,&quot;name&quot;:&quot;Nico pentester&quot;},&quot;supervisor&quot;:&quot;ttester&#x27;xxx\&quot;\u003e\u003cimg src=xxx onerror=confirm(123)\u003e&quot;,&quot;funding_codes&quot;:[]},{&quot;id&quot;:67669,&quot;name&quot;:&quot;Project 15.09&quot;,&quot;created_by&quot;:{&quot;id&quot;:777,&quot;name&quot;:&quot;的 (&#x27;of&#x27;), 不  ą, č, ę, ė, į, š, ų, 一 (&#x27;one&#x27;, &#x27;an&#x27;), 了 ( PERF ), 是 (the cop</pre></details></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Get project</td>
+          <td><code>GET /accounts/{id}/projects/{id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>362 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;name&quot;:&quot;HLA-2 Project&quot;,&quot;supervisor&quot;:&quot;Chris Mills&quot;,&quot;additional_information&quot;:&quot;\u003cp\u003eHLA-2 Project\u003c/p\u003e\r\n&quot;,&quot;funding_codes&quot;:[],&quot;selected_users&quot;:[{&quot;id&quot;:496,&quot;name&quot;:&quot;Veselka reports&quot;},{&quot;id&quot;:759,&quot;name&quot;:&quot;Veronika DepAdmin&quot;},{&quot;id&quot;:760,&quot;name&quot;:&quot;VeronikaGuest Ivanova&quot;},{&quot;id&quot;:761,&quot;name&quot;:&quot;VeronikaStudent Ivanova&quot;},{&quot;id&quot;:762,&quot;name&quot;:&quot;VeronikaResearcher Ivanova update&quot;},{&quot;id&quot;:763,&quot;name&quot;:&quot;Instructor Ivanova&quot;},{&quot;id&quot;:765,&quot;name&quot;:&quot;VeronikaGuest2 Ivanova&quot;},{&quot;id&quot;:767,&quot;name&quot;:&quot;Veronika Ivanova&quot;},{&quot;id&quot;:7</pre></details></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>List groups</td>
+          <td><code>GET /groups</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>325 ms</td>
+          <td><details><summary>show</summary><pre>[{&quot;id&quot;:2117,&quot;name&quot;:&quot;API mandatory rpoject&quot;},{&quot;id&quot;:2098,&quot;name&quot;:&quot;API mandatory funding codes&quot;},{&quot;id&quot;:1996,&quot;name&quot;:&quot;API -12 hours cut off&quot;},{&quot;id&quot;:1995,&quot;name&quot;:&quot;API 24 hours cut off editing&quot;},{&quot;id&quot;:1994,&quot;name&quot;:&quot;API group limit for all students&quot;},{&quot;id&quot;:1993,&quot;name&quot;:&quot;API Trained/untrained users schedule split &quot;},{&quot;id&quot;:1992,&quot;name&quot;:&quot;API Schedule time &quot;},{&quot;id&quot;:1909,&quot;name&quot;:&quot;Expand All button&quot;},{&quot;id&quot;:1818,&quot;name&quot;:&quot;Untrained users&quot;},{&quot;id&quot;:1817,&quot;name&quot;:&quot;5943&quot;},{&quot;id&quot;:1815,&quot;name&quot;:&quot;5956 student&quot;},{&quot;id&quot;:1814,&quot;name&quot;:&quot;</pre></details></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Get group</td>
+          <td><code>GET /groups/{id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>394 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;id&quot;:2117,&quot;name&quot;:&quot;API mandatory rpoject&quot;,&quot;equipment&quot;:[{&quot;id&quot;:18974,&quot;name&quot;:&quot;API mandatory project&quot;}]}</pre></details></td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>List lab users</td>
+          <td><code>GET /users/{account_id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>386 ms</td>
+          <td><details><summary>show</summary><pre>[{&quot;user_id&quot;:777,&quot;role&quot;:&quot;admin&quot;,&quot;account_id&quot;:543,&quot;name&quot;:&quot;的 (&#x27;of&#x27;), 不  ą, č, ę, ė, į, š, ų, 一 (&#x27;one&#x27;, &#x27;an&#x27;), 了 ( PERF ), 是 (the copula), 我 (I/me), 上 (on, up), 他; &#x27;he OrgAdmin ç, ğ, ı, ö, ş, ü &quot;,&quot;email&quot;:&quot;vivanova+enterprise@clustermarket.com&quot;},{&quot;user_id&quot;:763,&quot;role&quot;:&quot;instructor&quot;,&quot;account_id&quot;:543,&quot;name&quot;:&quot;Instructor Ivanova&quot;,&quot;email&quot;:&quot;vivanova+instructor@clustermarket.com&quot;},{&quot;user_id&quot;:761,&quot;role&quot;:&quot;student&quot;,&quot;account_id&quot;:543,&quot;name&quot;:&quot;VeronikaStudent Ivanova&quot;,&quot;email&quot;:&quot;vivanova+student@clustermarket.com&quot;},{&quot;</pre></details></td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>List equipment users</td>
+          <td><code>GET /equipment/{id}/users</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>631 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;users&quot;:[{&quot;user_id&quot;:759,&quot;role&quot;:&quot;researcher&quot;,&quot;account_id&quot;:543,&quot;name&quot;:&quot;Veronika DepAdmin&quot;,&quot;email&quot;:&quot;vivanova+admin@clustermarket.com&quot;},{&quot;user_id&quot;:761,&quot;role&quot;:&quot;student&quot;,&quot;account_id&quot;:543,&quot;name&quot;:&quot;VeronikaStudent Ivanova&quot;,&quot;email&quot;:&quot;vivanova+student@clustermarket.com&quot;},{&quot;user_id&quot;:762,&quot;role&quot;:&quot;researcher&quot;,&quot;account_id&quot;:543,&quot;name&quot;:&quot;VeronikaResearcher Ivanova update&quot;,&quot;email&quot;:&quot;vivanova+researcher@clustermarket.com&quot;},{&quot;user_id&quot;:763,&quot;role&quot;:&quot;instructor&quot;,&quot;account_id&quot;:543,&quot;name&quot;:&quot;Instructor Ivanova&quot;,&quot;email&quot;:&quot;vivano</pre></details></td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>List equipment (one page)</td>
+          <td><code>GET /equipment</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>902 ms</td>
+          <td><details><summary>show</summary><pre>[{&quot;id&quot;:20281,&quot;name&quot;:&quot;EQCE-EC05-muz7gxf4-icbbfx updated&quot;,&quot;description&quot;:&quot;Changed description&quot;,&quot;manufacturer&quot;:&quot;Carl Zeiss&quot;,&quot;room&quot;:&quot;Updated room&quot;,&quot;availability_status&quot;:&quot;Unavailable&quot;,&quot;category&quot;:&quot;Equipment&quot;,&quot;subcategory&quot;:&quot;Microscopy \u0026 Imaging&quot;,&quot;image_url&quot;:null,&quot;contact_persons&quot;:[]},{&quot;id&quot;:20280,&quot;name&quot;:&quot;EQCE-EC04-muz7gwfw-13jctw updated&quot;,&quot;description&quot;:&quot;Default description&quot;,&quot;manufacturer&quot;:&quot;Carl Zeiss&quot;,&quot;room&quot;:&quot;Unchanged room&quot;,&quot;availability_status&quot;:&quot;Always Available&quot;,&quot;category&quot;:&quot;Equipment&quot;,&quot;subcategor</pre></details></td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>List equipment (all pages)</td>
+          <td><code>GET /equipment (every page)</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>16842 ms</td>
+          <td><details><summary>show</summary><pre>[{&quot;id&quot;:2592,&quot;name&quot;:&quot;Microscope&quot;,&quot;description&quot;:&quot;Acquireimages of microorganisms that are too small to be seen by the naked eye&quot;,&quot;manufacturer&quot;:&quot;Shimadzu&quot;,&quot;room&quot;:&quot;Microbiology Lab (Alrazi)&quot;,&quot;availability_status&quot;:&quot;Always Available&quot;,&quot;category&quot;:&quot;Equipment&quot;,&quot;subcategory&quot;:&quot;Microscopy \u0026 Imaging&quot;,&quot;image_url&quot;:null,&quot;contact_persons&quot;:[]},{&quot;id&quot;:2591,&quot;name&quot;:&quot;Colony counter&quot;,&quot;description&quot;:&quot;Counting the numer of colonies&quot;,&quot;manufacturer&quot;:&quot;Keimzahlgerat&quot;,&quot;room&quot;:&quot;Microbiology Lab (Alrazi)&quot;,&quot;availability_statu</pre></details></td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>Get equipment</td>
+          <td><code>GET /equipment/{id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>313 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;id&quot;:18369,&quot;name&quot;:&quot;AKTA 1&quot;,&quot;manufacturer&quot;:&quot;Anton Paar&quot;,&quot;model_number&quot;:&quot;MCR 102&quot;,&quot;city&quot;:&quot;City&quot;,&quot;charging_type&quot;:&quot;Per Hour&quot;,&quot;currency&quot;:&quot;GBP&quot;,&quot;manufacturing_year&quot;:&quot;2025&quot;,&quot;country&quot;:&quot;US&quot;,&quot;serial_number&quot;:&quot;&quot;,&quot;room&quot;:&quot;&quot;,&quot;category&quot;:&quot;Equipment&quot;,&quot;subcategory&quot;:&quot;3D Printer&quot;,&quot;image_urls&quot;:[],&quot;lab&quot;:{&quot;id&quot;:543,&quot;name&quot;:&quot;Onika Enterprise Lab&quot;},&quot;description&quot;:&quot;{\&quot;textContent\&quot;:\&quot;\&quot;,\&quot;deltaContent\&quot;:{}}&quot;,&quot;custom_addons&quot;:[]}</pre></details></td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>List equipment bookings</td>
+          <td><code>GET /equipment/{id}/bookings</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>354 ms</td>
+          <td><details><summary>show</summary><pre>[]</pre></details></td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>List equipment contact people</td>
+          <td><code>GET /equipment/contact_people</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>358 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;contact_access_roles&quot;:[{&quot;id&quot;:864,&quot;user_id&quot;:777,&quot;role&quot;:&quot;admin&quot;,&quot;account_id&quot;:543,&quot;name&quot;:&quot;的 (&#x27;of&#x27;), 不  ą, č, ę, ė, į, š, ų, 一 (&#x27;one&#x27;, &#x27;an&#x27;), 了 ( PERF ), 是 (the copula), 我 (I/me), 上 (on, up), 他; &#x27;he OrgAdmin ç, ğ, ı, ö, ş, ü &quot;,&quot;email&quot;:&quot;vivanova+enterprise@clustermarket.com&quot;},{&quot;id&quot;:1435,&quot;user_id&quot;:923,&quot;role&quot;:&quot;admin&quot;,&quot;account_id&quot;:543,&quot;name&quot;:&quot;Anelia 999&quot;,&quot;email&quot;:&quot;vivanova+999@clustermarket.com&quot;},{&quot;id&quot;:2205,&quot;user_id&quot;:1080,&quot;role&quot;:&quot;admin&quot;,&quot;account_id&quot;:543,&quot;name&quot;:&quot;chris mills&quot;,&quot;email&quot;:&quot;cmills@clustermarke</pre></details></td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>List booking add-ons</td>
+          <td><code>GET /equipment/{id}/booking_add_ons</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>271 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;add_ons&quot;:[]}</pre></details></td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td>List bookings</td>
+          <td><code>GET /bookings</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>1061 ms</td>
+          <td><details><summary>show</summary><pre>[{&quot;last_public_note&quot;:null,&quot;id&quot;:20650,&quot;start_time&quot;:&quot;2026-10-07T12:00:00.000Z&quot;,&quot;end_time&quot;:&quot;2026-10-07T13:30:00.000Z&quot;,&quot;maintenance_provider&quot;:null,&quot;maintenance_type&quot;:null,&quot;status&quot;:&quot;completed&quot;,&quot;equipment&quot;:{&quot;name&quot;:&quot;Equipment with add-ons per run&quot;},&quot;requested_at&quot;:&quot;2026-10-07T11:58:40.447Z&quot;,&quot;booking_type&quot;:&quot;internal&quot;,&quot;user_id&quot;:777,&quot;equipment_id&quot;:7634},{&quot;last_public_note&quot;:null,&quot;id&quot;:20649,&quot;start_time&quot;:&quot;2026-10-07T15:15:00.000Z&quot;,&quot;end_time&quot;:&quot;2026-10-07T16:15:00.000Z&quot;,&quot;maintenance_provider&quot;:null,&quot;maintenance_</pre></details></td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td>Get custom form response</td>
+          <td><code>GET /custom_form_responses/{id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>343 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;custom_form_id&quot;:8,&quot;created_at&quot;:&quot;2026-09-15T14:36:41.035Z&quot;,&quot;updated_at&quot;:&quot;2026-09-15T14:36:41.035Z&quot;,&quot;custom_form_response_id&quot;:893,&quot;custom_form_version_id&quot;:5,&quot;booking_reference_id&quot;:20228,&quot;form_response&quot;:&quot;[{\&quot;type\&quot;:\&quot;heading\&quot;,\&quot;text\&quot;:\&quot;This is a heading\&quot;},{\&quot;type\&quot;:\&quot;paragraph\&quot;,\&quot;text\&quot;:\&quot;This is a paragraph\&quot;},{\&quot;type\&quot;:\&quot;shortText\&quot;,\&quot;text\&quot;:\&quot;Short text label\&quot;,\&quot;helperText\&quot;:\&quot;\&quot;,\&quot;validations\&quot;:{\&quot;isRequired\&quot;:false},\&quot;value\&quot;:\&quot;\&quot;},{\&quot;type\&quot;:\&quot;longText\&quot;,\&quot;text\&quot;:\&quot;Long text label\&quot;,\&quot;h</pre></details></td>
+        </tr>
+        <tr>
+          <td>18</td>
+          <td>Get template equipment</td>
+          <td><code>GET /equipment/{id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>279 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;id&quot;:18369,&quot;name&quot;:&quot;AKTA 1&quot;,&quot;manufacturer&quot;:&quot;Anton Paar&quot;,&quot;model_number&quot;:&quot;MCR 102&quot;,&quot;city&quot;:&quot;City&quot;,&quot;charging_type&quot;:&quot;Per Hour&quot;,&quot;currency&quot;:&quot;GBP&quot;,&quot;manufacturing_year&quot;:&quot;2025&quot;,&quot;country&quot;:&quot;US&quot;,&quot;serial_number&quot;:&quot;&quot;,&quot;room&quot;:&quot;&quot;,&quot;category&quot;:&quot;Equipment&quot;,&quot;subcategory&quot;:&quot;3D Printer&quot;,&quot;image_urls&quot;:[],&quot;lab&quot;:{&quot;id&quot;:543,&quot;name&quot;:&quot;Onika Enterprise Lab&quot;},&quot;description&quot;:&quot;{\&quot;textContent\&quot;:\&quot;\&quot;,\&quot;deltaContent\&quot;:{}}&quot;,&quot;custom_addons&quot;:[]}</pre></details></td>
+        </tr>
+        <tr>
+          <td>19</td>
+          <td>Register photo upload</td>
+          <td><code>POST /uploads</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>201</td>
+          <td>342 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;signed_id&quot;:&quot;eyJfcmFpbHMiOnsiZGF0YSI6MjE5OSwicHVyIjoiYmxvYl9pZCJ9fQ==--5322666b98ecf3849a07645d0d9f61e85e516569&quot;,&quot;filename&quot;:&quot;sample_photo.png&quot;,&quot;content_type&quot;:&quot;image/png&quot;,&quot;byte_size&quot;:23222,&quot;purpose&quot;:&quot;photo&quot;,&quot;direct_upload&quot;:{&quot;url&quot;:&quot;https://clustermarket-staging.ams3.digitaloceanspaces.com/7jg8uy1mttnuc4my9j49ttmr81bw?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=IJQGEKNI7JMK23S6RDFX%2F20261008%2Fams3%2Fs3%2Faws4_request\u0026X-Amz-Date=20261008T093910Z\u0026X-Amz-Expires=300\u0026X-Amz-S</pre></details></td>
+        </tr>
+        <tr>
+          <td>20</td>
+          <td>Upload photo bytes</td>
+          <td><code>PUT direct_upload.url</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>293 ms</td>
+          <td><details><summary>show</summary><pre></pre></details></td>
+        </tr>
+        <tr>
+          <td>21</td>
+          <td>Create equipment</td>
+          <td><code>POST /equipment</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>201</td>
+          <td>819 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;success&quot;:true,&quot;equipment&quot;:{&quot;id&quot;:20285,&quot;created_at&quot;:&quot;2026-10-08T09:39:11Z&quot;,&quot;updated_at&quot;:&quot;2026-10-08T09:39:11Z&quot;,&quot;account_id&quot;:543,&quot;lab&quot;:{&quot;id&quot;:543,&quot;name&quot;:&quot;Onika Enterprise Lab&quot;},&quot;name&quot;:&quot;API Example Microscope&quot;,&quot;room&quot;:&quot;&quot;,&quot;category&quot;:&quot;Equipment&quot;,&quot;subcategory&quot;:&quot;3D Printer&quot;,&quot;manufacturer&quot;:&quot;Nikon&quot;,&quot;model_number&quot;:&quot;A1 HD25&quot;,&quot;manufacturing_year&quot;:null,&quot;serial_number&quot;:null,&quot;availability_status&quot;:&quot;Always Available&quot;,&quot;description&quot;:&quot;Default description&quot;,&quot;lab_rules&quot;:null,&quot;safety_features&quot;:null,&quot;date_of_purchase&quot;:n</pre></details></td>
+        </tr>
+        <tr>
+          <td>22</td>
+          <td>Update equipment</td>
+          <td><code>PATCH /equipment/{id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>431 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;success&quot;:true,&quot;message&quot;:&quot;Equipment was updated.&quot;,&quot;equipment&quot;:{&quot;id&quot;:20285,&quot;created_at&quot;:&quot;2026-10-08T09:39:11Z&quot;,&quot;updated_at&quot;:&quot;2026-10-08T09:39:12Z&quot;,&quot;account_id&quot;:543,&quot;lab&quot;:{&quot;id&quot;:543,&quot;name&quot;:&quot;Onika Enterprise Lab&quot;},&quot;name&quot;:&quot;API Example Microscope (updated)&quot;,&quot;room&quot;:&quot;&quot;,&quot;category&quot;:&quot;Equipment&quot;,&quot;subcategory&quot;:&quot;3D Printer&quot;,&quot;manufacturer&quot;:&quot;Nikon&quot;,&quot;model_number&quot;:&quot;A1 HD25&quot;,&quot;manufacturing_year&quot;:null,&quot;serial_number&quot;:null,&quot;availability_status&quot;:&quot;Always Available&quot;,&quot;description&quot;:&quot;Default description&quot;,&quot;lab_rules&quot;:nul</pre></details></td>
+        </tr>
+        <tr>
+          <td>23</td>
+          <td>Get available slots</td>
+          <td><code>GET /equipment_available_slots/{id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>307 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;available_slots&quot;:[{&quot;start_time&quot;:&quot;2026-10-09T09:00:00Z&quot;,&quot;end_time&quot;:&quot;2026-10-16T09:00:00Z&quot;}]}</pre></details></td>
+        </tr>
+        <tr>
+          <td>24</td>
+          <td>Create booking</td>
+          <td><code>POST /bookings</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>201</td>
+          <td>985 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;success&quot;:true,&quot;message&quot;:&quot;The booking was created and confirmed successfully.&quot;,&quot;booking&quot;:{&quot;id&quot;:20653,&quot;equipment_id&quot;:18369,&quot;equipment&quot;:{&quot;id&quot;:18369,&quot;name&quot;:&quot;AKTA 1&quot;},&quot;status&quot;:&quot;booked&quot;,&quot;account&quot;:{&quot;id&quot;:543,&quot;name&quot;:&quot;Onika Enterprise Lab&quot;},&quot;start_time&quot;:&quot;2026-10-09T09:00:00.000Z&quot;,&quot;end_time&quot;:&quot;2026-10-09T10:00:00.000Z&quot;,&quot;creator&quot;:{&quot;id&quot;:1080,&quot;name&quot;:&quot;chris mills&quot;},&quot;booking_owner&quot;:{&quot;id&quot;:1080,&quot;name&quot;:&quot;chris mills&quot;},&quot;booking_type&quot;:&quot;use&quot;,&quot;maintenance_provider&quot;:null,&quot;maintenance_type&quot;:null,&quot;invited_users&quot;:[],&quot;proj</pre></details></td>
+        </tr>
+        <tr>
+          <td>25</td>
+          <td>Get booking</td>
+          <td><code>GET /bookings/{id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>390 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;id&quot;:20653,&quot;start_time&quot;:&quot;2026-10-09T09:00:00.000Z&quot;,&quot;end_time&quot;:&quot;2026-10-09T10:00:00.000Z&quot;,&quot;maintenance_provider&quot;:null,&quot;maintenance_type&quot;:null,&quot;currency&quot;:&quot;GBP&quot;,&quot;add_ons&quot;:null,&quot;custom_form_responses&quot;:[],&quot;requester_organisation&quot;:{&quot;id&quot;:543,&quot;name&quot;:&quot;Onika Enterprise Lab&quot;},&quot;provider_organisation&quot;:{&quot;id&quot;:543,&quot;name&quot;:&quot;Onika Enterprise Lab&quot;},&quot;requester&quot;:{&quot;id&quot;:1080,&quot;email&quot;:&quot;cmills@clustermarket.com&quot;,&quot;sector&quot;:&quot;industry&quot;,&quot;name&quot;:&quot;chris mills&quot;},&quot;status&quot;:&quot;booked&quot;,&quot;duration&quot;:60,&quot;equipment&quot;:{&quot;id&quot;:18369,&quot;name&quot;:&quot;AKTA</pre></details></td>
+        </tr>
+        <tr>
+          <td>26</td>
+          <td>Update booking</td>
+          <td><code>PATCH /bookings/{id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>688 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;success&quot;:true,&quot;message&quot;:&quot;The booking was updated successfully.&quot;,&quot;booking&quot;:{&quot;id&quot;:20653,&quot;equipment_id&quot;:18369,&quot;equipment&quot;:{&quot;id&quot;:18369,&quot;name&quot;:&quot;AKTA 1&quot;},&quot;status&quot;:&quot;booked&quot;,&quot;account&quot;:{&quot;id&quot;:543,&quot;name&quot;:&quot;Onika Enterprise Lab&quot;},&quot;start_time&quot;:&quot;2026-10-09T09:00:00.000Z&quot;,&quot;end_time&quot;:&quot;2026-10-09T09:30:00.000Z&quot;,&quot;creator&quot;:{&quot;id&quot;:1080,&quot;name&quot;:&quot;chris mills&quot;},&quot;booking_owner&quot;:{&quot;id&quot;:1080,&quot;name&quot;:&quot;chris mills&quot;},&quot;booking_type&quot;:&quot;use&quot;,&quot;maintenance_provider&quot;:null,&quot;maintenance_type&quot;:null,&quot;invited_users&quot;:[],&quot;projects&quot;:[],&quot;recu</pre></details></td>
+        </tr>
+        <tr>
+          <td>27</td>
+          <td>Register note file upload</td>
+          <td><code>POST /uploads</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>201</td>
+          <td>324 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;signed_id&quot;:&quot;eyJfcmFpbHMiOnsiZGF0YSI6MjIwMCwicHVyIjoiYmxvYl9pZCJ9fQ==--d5249956eaae9866e08366d86c9a8abda9140920&quot;,&quot;filename&quot;:&quot;sample_note.pdf&quot;,&quot;content_type&quot;:&quot;application/pdf&quot;,&quot;byte_size&quot;:603,&quot;purpose&quot;:&quot;booking_note&quot;,&quot;direct_upload&quot;:{&quot;url&quot;:&quot;https://clustermarket-staging.ams3.digitaloceanspaces.com/tieatdvu43ndt6a059ut6e5xx56m?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=IJQGEKNI7JMK23S6RDFX%2F20261008%2Fams3%2Fs3%2Faws4_request\u0026X-Amz-Date=20261008T093915Z\u0026X-Amz-Expires=300\u0</pre></details></td>
+        </tr>
+        <tr>
+          <td>28</td>
+          <td>Upload note file bytes</td>
+          <td><code>PUT direct_upload.url</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>243 ms</td>
+          <td><details><summary>show</summary><pre></pre></details></td>
+        </tr>
+        <tr>
+          <td>29</td>
+          <td>Create booking note</td>
+          <td><code>POST /booking/notes/{booking_id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>201</td>
+          <td>658 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;success&quot;:true,&quot;booking_id&quot;:20653,&quot;booking_note&quot;:{&quot;note_id&quot;:3088,&quot;note_text&quot;:&quot;Note added by the Calira API example script.&quot;,&quot;note_author&quot;:&quot;chris mills&quot;,&quot;note_user_id&quot;:1080,&quot;note_file_signed_id&quot;:&quot;eyJfcmFpbHMiOnsiZGF0YSI6MjIwMCwicHVyIjoiYmxvYl9pZCJ9fQ==--d5249956eaae9866e08366d86c9a8abda9140920&quot;},&quot;created_at&quot;:&quot;2026-10-08T09:39:15Z&quot;,&quot;updated_at&quot;:&quot;2026-10-08T09:39:15Z&quot;,&quot;errors&quot;:[]}</pre></details></td>
+        </tr>
+        <tr>
+          <td>30</td>
+          <td>Update booking note</td>
+          <td><code>PATCH /booking/notes/{note_id}</code></td>
+          <td style="color:#fff;background:#1a7f37;font-weight:bold;text-align:center">PASS</td>
+          <td>200</td>
+          <td>389 ms</td>
+          <td><details><summary>show</summary><pre>{&quot;success&quot;:true,&quot;booking_id&quot;:20653,&quot;booking_note&quot;:{&quot;note_id&quot;:3088,&quot;note_text&quot;:&quot;Note updated by the Calira API example script.&quot;,&quot;note_author&quot;:&quot;chris mills&quot;,&quot;note_user_id&quot;:1080,&quot;note_file_signed_id&quot;:&quot;eyJfcmFpbHMiOnsiZGF0YSI6MjIwMCwicHVyIjoiYmxvYl9pZCJ9fQ==--d5249956eaae9866e08366d86c9a8abda9140920&quot;},&quot;created_at&quot;:&quot;2026-10-08T09:39:15Z&quot;,&quot;updated_at&quot;:&quot;2026-10-08T09:39:16Z&quot;,&quot;errors&quot;:[]}</pre></details></td>
+        </tr>
+  </table>
+</body>
+</html>
