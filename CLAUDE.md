@@ -137,7 +137,7 @@ For reporting tasks, focus on clear summaries and actionable takeaways rather th
 
 ## Product code
 
-The Calira application code (a Rails, GraphQL and Svelte app, formerly Clustermarket) is in `C:\Users\mills\Documents\Code\Clustermarket\app-clustermarket`. It is read only for PM work: never edit it. Read `context/code-map.md` first to find the right folder. The `apicode/`, `csharpclient/`, `apitraining/` and `openapi.json` items in this workspace are my personal projects, not the product.
+The Calira application code (a Rails, GraphQL and Svelte app, formerly Clustermarket) is in `C:\Claude\app-clustermarket`. It is read only for PM work: never edit it. Read `context/code-map.md` first to find the right folder. The `apicode/`, `csharpclient/`, `apitraining/` and `openapi.json` items in this workspace are my personal projects, not the product.
 
 ## Workspace folders
 
