@@ -1,0 +1,63 @@
+# Postgres + Redis for local Clustermarket development.
+# The Rails app itself runs natively (see wsl-setup.sh --no-services).
+#
+#   docker compose -f local-dev/docker-compose.yml up -d
+#
+# Matches .env.development:
+#   DATABASE_DEV_URL=postgres://postgres:postgres@localhost:5432/clustermarket_dev
+#   REDIS_URL=redis://127.0.0.1:6379
+# Don't run this alongside the native Postgres/Redis from wsl-setup.sh (port clash).
+name: clustermarket-dev
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: clustermarket_dev
+    command:
+      - postgres
+      - -c
+      - shared_buffers=64MB
+      - -c
+      - work_mem=4MB
+      - -c
+      - maintenance_work_mem=32MB
+      - -c
+      - effective_cache_size=256MB
+      - -c
+      - max_connections=30
+      - -c
+      - fsync=off
+      - -c
+      - synchronous_commit=off
+      - -c
+      - full_page_writes=off
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    mem_limit: 384m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    command: ["redis-server", "--maxmemory", "128mb", "--maxmemory-policy", "noeviction", "--save", ""]
+    mem_limit: 192m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
